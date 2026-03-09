@@ -1,0 +1,8 @@
+{
+    "name": "threshpad",
+    "description": "GNOME Shell extension for ThinkPad dual-battery threshold management",
+    "uuid": "threshpad@looselyhuman",
+    "version": 1,
+    "shell-version": ["45", "46", "47"],
+    "url": "https://github.com/looselyhuman/threshpad"
+}
