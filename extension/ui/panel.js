@@ -5,7 +5,7 @@ import St from 'gi://St';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
-import { applyPreset, PRESETS } from './presets.js';
+import { applyPreset, PRESETS, presetSummary } from './presets.js';
 
 const POLL_INTERVAL_SECONDS = 30;
 
@@ -15,10 +15,9 @@ const SYSFS_BASE = MOCK
     : '/sys/class/power_supply';
 
 /**
- * Read a sysfs (or mock fixture) file and return its trimmed string value.
- * Returns null on any error.
+ * Read a sysfs file and return its trimmed string value, or null on error.
  *
- * @param {string} path - Absolute path to the file.
+ * @param {string} path
  * @returns {string|null}
  */
 function readSysfs(path) {
@@ -33,9 +32,9 @@ function readSysfs(path) {
 }
 
 /**
- * Enumerate present BAT* devices under SYSFS_BASE, sorted (BAT0 before BAT1).
+ * Enumerate present BAT* devices under SYSFS_BASE, sorted.
  *
- * @returns {string[]} e.g. ['BAT0', 'BAT1'] or ['BAT1']
+ * @returns {string[]}
  */
 function detectBatteries() {
     try {
@@ -61,16 +60,18 @@ function detectBatteries() {
 }
 
 /**
- * Read capacity and status for a given battery identifier.
+ * Read capacity, status, and current thresholds for a battery.
  *
- * @param {string} bat - e.g. 'BAT0' or 'BAT1'
- * @returns {{ capacity: string|null, status: string|null }}
+ * @param {string} bat
+ * @returns {{ capacity: string|null, status: string|null, start: string|null, stop: string|null }}
  */
 function readBattery(bat) {
     const base = `${SYSFS_BASE}/${bat}`;
     return {
         capacity: readSysfs(`${base}/capacity`),
         status: readSysfs(`${base}/status`),
+        start: readSysfs(`${base}/charge_control_start_threshold`),
+        stop: readSysfs(`${base}/charge_control_end_threshold`),
     };
 }
 
@@ -111,9 +112,10 @@ class ThreshpadPanel extends PanelMenu.Button {
         }
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        // Presets
+        // Presets with threshold summary
         for (const [name, preset] of Object.entries(PRESETS)) {
-            const item = new PopupMenu.PopupMenuItem(name);
+            const summary = presetSummary(preset, this._batteries);
+            const item = new PopupMenu.PopupMenuItem(`${name}  ${summary}`);
             item.connect('activate', () => {
                 applyPreset(preset, this._batteries);
             });
@@ -125,13 +127,33 @@ class ThreshpadPanel extends PanelMenu.Button {
     _refresh() {
         const states = this._batteries.map(bat => ({ bat, ...readBattery(bat) }));
 
-        const labelParts = states.map(({ capacity }) => `${capacity ?? '?'}%`);
-        this._label.set_text(labelParts.length > 0 ? `⚡ ${labelParts.join(' / ')}` : '⚡ —');
+        // Top-bar label: "⚡ 98% [75–80]" or "⚡ 98% / 72% [75–80]"
+        const capacityParts = states.map(({ capacity }) => `${capacity ?? '?'}%`);
+        const threshParts = states.map(({ start, stop }) =>
+            (start !== null && stop !== null) ? `${start}–${stop}` : '?–?'
+        );
+        // Show thresholds once if all batteries share the same values, else per-battery
+        const allSameThresh = threshParts.every(t => t === threshParts[0]);
+        const threshLabel = threshParts.length > 0
+            ? ` [${allSameThresh ? threshParts[0] : threshParts.join(' / ')}]`
+            : '';
 
-        for (const { bat, capacity, status } of states) {
-            const text = capacity !== null
-                ? `${bat}: ${capacity}% (${status ?? '?'})`
-                : `${bat}: N/A`;
+        this._label.set_text(
+            capacityParts.length > 0
+                ? `⚡ ${capacityParts.join(' / ')}${threshLabel}`
+                : '⚡ —'
+        );
+
+        // Menu status items: "BAT1: 98% (Not charging) · 75–80"
+        for (const { bat, capacity, status, start, stop } of states) {
+            let text = `${bat}: `;
+            if (capacity !== null) {
+                text += `${capacity}% (${status ?? '?'})`;
+                if (start !== null && stop !== null)
+                    text += ` · ${start}–${stop}`;
+            } else {
+                text += 'N/A';
+            }
             this._batItems[bat]?.label.set_text(text);
         }
     }

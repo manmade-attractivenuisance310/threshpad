@@ -29,11 +29,9 @@ sudo cp "$REPO_ROOT/udev/99-threshpad.rules" /etc/udev/rules.d/
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 
-echo "==> Installing sudoers rule for batctl..."
-BATCTL_PATH="$(command -v batctl)"
-echo "$USER ALL=(ALL) NOPASSWD: $BATCTL_PATH set *" \
-    | sudo tee /etc/sudoers.d/threshpad > /dev/null
-sudo chmod 0440 /etc/sudoers.d/threshpad
+echo "==> Installing polkit policy for batctl..."
+sudo cp "$REPO_ROOT/polkit/org.threshpad.batctl.policy" \
+    /usr/share/polkit-1/actions/
 
 echo "==> Installing GNOME extension..."
 EXTENSION_DIR="$HOME/.local/share/gnome-shell/extensions/threshpad@looselyhuman"
@@ -45,7 +43,5 @@ glib-compile-schemas "$EXTENSION_DIR/schemas/"
 
 echo ""
 echo "Done. Next steps:"
-echo "  1. Log out and back in for group membership to take effect."
-echo "  2. Enable the extension: gnome-extensions enable threshpad@looselyhuman"
-echo ""
-echo "Note: Disable 'Charge Limit' in GNOME Settings → Power to avoid conflicts."
+echo "  1. Enable the extension: gnome-extensions enable threshpad@looselyhuman"
+echo "  2. Disable 'Charge Limit' in GNOME Settings → Power to avoid conflicts."

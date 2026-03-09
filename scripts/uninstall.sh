@@ -8,8 +8,9 @@ echo "==> Disabling and removing GNOME extension..."
 gnome-extensions disable "$EXTENSION_UUID" 2>/dev/null || true
 rm -rf "$EXTENSION_DIR"
 
-echo "==> Removing sudoers rule..."
-sudo rm -f /etc/sudoers.d/threshpad
+echo "==> Removing polkit policy..."
+sudo rm -f /usr/share/polkit-1/actions/org.threshpad.batctl.policy
+sudo rm -f /etc/sudoers.d/threshpad  # legacy, may not exist
 
 echo "==> Removing udev rules..."
 sudo rm -f /etc/udev/rules.d/99-threshpad.rules
