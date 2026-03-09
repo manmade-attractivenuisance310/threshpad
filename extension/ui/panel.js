@@ -120,7 +120,7 @@ export class ThreshpadPanel extends PanelMenu.Button {
         const states = this._batteries.map(bat => ({ bat, ...readBattery(bat) }));
 
         const labelParts = states.map(({ capacity }) => `${capacity ?? '?'}%`);
-        this._label.set_text(`⚡ ${labelParts.join(' / ')}`);
+        this._label.set_text(labelParts.length > 0 ? `⚡ ${labelParts.join(' / ')}` : '⚡ —');
 
         for (const { bat, capacity, status } of states) {
             const text = capacity !== null
