@@ -1,0 +1,21 @@
+{
+    "env": {
+        "es2022": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": ["error", 4],
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
+        "no-unused-vars": ["warn"],
+        "no-console": "off"
+    },
+    "globals": {
+        "log": "readonly",
+        "logError": "readonly",
+        "imports": "readonly"
+    }
+}

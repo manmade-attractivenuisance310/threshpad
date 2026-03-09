@@ -1,0 +1,16 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# GNOME Extension packaging
+*.zip
+_build/
+
+# Compiled GSettings schema (generated, not committed)
+extension/schemas/gschemas.compiled
+
+# VS Code remote artifacts
+.vscode/sftp.json
+
+# Local scratch
+scratch/

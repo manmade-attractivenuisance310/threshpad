@@ -1,0 +1,12 @@
+{
+  "name": "threshpad",
+  "version": "0.1.0",
+  "description": "GNOME Shell extension for ThinkPad dual-battery threshold management",
+  "private": true,
+  "scripts": {
+    "lint": "eslint extension/"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}
