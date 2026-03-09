@@ -10,13 +10,14 @@ system-tray UI with live battery status and one-click preset modes.
 - Live BAT0 / BAT1 charge percentage and status in the top bar
 - Preset modes: **Desk**, **Balanced**, **Travel Prep**
 - Non-root writes via udev + `battery` group — no sudo at runtime
+- Auto-detects which batteries are present — works with single or dual battery
 - Mock mode for hardware-free development (`THRESHPAD_MOCK=1`)
 
 ## Requirements
 
 - GNOME Shell 45+
 - ThinkPad with `thinkpad_acpi` kernel module
-- [`batctl`](https://github.com/Ooooze/batctl) installed at `/usr/local/bin/batctl`
+- [`batctl`](https://github.com/Ooooze/batctl) in your PATH (installed automatically by `install.sh`)
 
 ## Installation
 
@@ -27,6 +28,21 @@ bash scripts/install.sh
 # Log out and back in for group membership to take effect
 gnome-extensions enable threshpad@looselyhuman
 ```
+
+## UPower conflict
+
+On Ubuntu and other GNOME desktops, UPower may manage charge thresholds via
+**GNOME Settings → Power → Charge Limit**. If that setting is enabled, it will
+override changes made by threshpad.
+
+**Fix:** Open GNOME Settings → Power and disable **Charge Limit** before using
+threshpad presets.
+
+You can confirm the conflict by running:
+```bash
+batctl detect
+```
+A warning will appear if UPower is active.
 
 ## Preset Modes
 

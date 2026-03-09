@@ -21,8 +21,11 @@ reads battery state directly from sysfs for efficiency.
 - **Observed on dev hardware:** only `BAT1` appears under `/sys/class/power_supply/`
   (BAT0 absent — internal battery may not be installed). The extension handles this
   gracefully by enumerating present batteries at startup rather than hardcoding names.
-- `batctl detect` needed to verify per-battery write targeting before dual-battery
-  preset writes are trusted.
+- `batctl detect` output on dev hardware:
+  - Backend: Generic, Batteries: [BAT1]
+  - Capabilities: start threshold (0..99), stop threshold (1..100), charge behaviour
+  - ⚠ UPower conflict: GNOME Settings → Power → Charge Limit overrides batctl writes.
+    Users must disable that setting. Confirmed via `batctl detect` warning.
 
 ## Preset Modes
 | Mode        | BAT0        | BAT1        | Notes                          |
@@ -42,7 +45,7 @@ Replace BAT0 with BAT1 for the external battery.
 
 ## batctl CLI (writes only)
 ```bash
-sudo batctl set --start 40 --stop 80   # set thresholds
+sudo batctl set --start 40 --stop 80   # set thresholds (start: 0..99, stop: 1..100)
 batctl status                           # read status (use sysfs instead in GJS)
 batctl detect                           # show detected hardware and capabilities
 ```
