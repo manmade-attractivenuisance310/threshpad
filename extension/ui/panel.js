@@ -87,7 +87,7 @@ class ThreshpadPanel extends PanelMenu.Button {
 
         this._label = new St.Label({
             text: '⚡',
-            y_align: 1, // Clutter.ActorAlign.CENTER
+            y_align: 2, // Clutter.ActorAlign.CENTER
         });
         this.add_child(this._label);
 
