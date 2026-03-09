@@ -7,7 +7,7 @@ reads battery state directly from sysfs for efficiency.
 
 ## Architecture
 - **Frontend:** GNOME Shell Extension — JavaScript/GJS, targeting GNOME 45+
-- **Backend:** `batctl` binary ([github.com/Ooooze/batctl](https://github.com/Ooooze/batctl)) installed at `/usr/local/bin/batctl`
+- **Backend:** `batctl` binary ([github.com/Ooooze/batctl](https://github.com/Ooooze/batctl)) — located via `GLib.find_program_in_path('batctl')` at runtime (works with `/usr/bin`, `/usr/local/bin`, AUR, etc.)
 - **Writes:** `Gio.Subprocess` → `batctl set --start N --stop N`
 - **Reads:** `Gio.File.load_contents()` directly on `/sys/class/power_supply/BAT*/`
 - **Permissions:** udev rules (`udev/99-threshpad.rules`) grant the `battery` group
@@ -48,6 +48,7 @@ batctl detect                           # show detected hardware and capabilitie
 ```
 Note: batctl has no `--index` flag. Each invocation targets whichever battery
 `batctl detect` found. Dual-battery write support needs hardware verification.
+The extension locates batctl via PATH at runtime — no hardcoded path.
 
 ## Code Style
 - 4-space indent, single quotes, semicolons

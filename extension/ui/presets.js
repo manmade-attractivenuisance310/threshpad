@@ -1,8 +1,10 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 
-const BATCTL = '/usr/local/bin/batctl';
 const MOCK = GLib.getenv('THRESHPAD_MOCK') === '1';
+
+// Locate batctl via PATH (covers /usr/bin, /usr/local/bin, AUR installs, etc.)
+const BATCTL = GLib.find_program_in_path('batctl');
 
 /**
  * Preset mode definitions, keyed by battery name.
@@ -34,6 +36,10 @@ export const PRESETS = {
 function runBatctl({ start, stop }) {
     if (MOCK) {
         log(`threshpad [mock]: batctl set --start ${start} --stop ${stop}`);
+        return;
+    }
+    if (!BATCTL) {
+        logError(new Error('batctl not found in PATH'), 'threshpad: install batctl to apply presets');
         return;
     }
     try {
