@@ -5,11 +5,15 @@ A GNOME Shell extension for managing ThinkPad dual-battery charge thresholds.
 Wraps the [`batctl`](https://github.com/Ooooze/batctl) binary to provide a
 system-tray UI with live battery status and one-click preset modes.
 
+This software was designed, scaffolded, coded, and debugged by Claude Code (Sonnet 4.6). Human provided high level requirements and keyboard gopher services.
+
 ## Features
 
-- Live BAT0 / BAT1 charge percentage and status in the top bar
-- Preset modes: **Desk**, **Balanced**, **Travel Prep**
-- Non-root writes via udev + `battery` group — no sudo at runtime
+- Live charge percentage per battery in the top bar (`⚡ 98%`)
+- Per-battery status and thresholds in the popup menu (`BAT1: 98% (Not charging) · 75–80`)
+- Preset modes: **Desk Mode**, **Balanced**, **Travel Prep** — with threshold ranges shown inline
+- Visual feedback when a preset is applied — buttons disable briefly, then re-enable with updated values
+- Privilege escalation via polkit (`pkexec`) — no password prompt for active desktop sessions
 - Auto-detects which batteries are present — works with single or dual battery
 - Mock mode for hardware-free development (`THRESHPAD_MOCK=1`)
 
